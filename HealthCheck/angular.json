@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "HeathCheck": {
+    "HealthCheck": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -68,21 +68,22 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "HeathCheck:build:production"
+              "browserTarget": "HealthCheck:build:production"
             },
             "development": {
-              "browserTarget": "HeathCheck:build:development"
+              "browserTarget": "HealthCheck:build:development"
             }
           },
           "defaultConfiguration": "development",
           "options": {
+            "browserTarget": "HealthCheck:build",
             "proxyConfig": "src/proxy.conf.js"
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "HeathCheck:build"
+            "browserTarget": "HealthCheck:build"
           }
         },
         "test": {
@@ -105,5 +106,5 @@
       }
     }
   },
-  "defaultProject": "HeathCheck"
+  "defaultProject": "HealthCheck"
 }
