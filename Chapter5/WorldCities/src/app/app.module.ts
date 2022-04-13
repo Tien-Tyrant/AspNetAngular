@@ -4,26 +4,26 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { HomeComponent } from './home/home.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { CitiesComponent } from './cities/cities.component';
+import { AngularMaterialModule } from './angular-material.module';
+import { CountriesComponent } from './countries/countries.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    NavMenuComponent
+    NavMenuComponent,
+    CitiesComponent,
+    CountriesComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatToolbarModule
+    AngularMaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]
