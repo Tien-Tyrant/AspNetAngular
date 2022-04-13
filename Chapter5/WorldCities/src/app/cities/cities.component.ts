@@ -28,7 +28,7 @@ export class CitiesComponent implements OnInit {
 
   constructor(private http: HttpClient) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.loadData();
   }
 

@@ -29,7 +29,7 @@ export class CountriesComponent implements OnInit {
 
   constructor(private http: HttpClient) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.loadData();
   }
 
