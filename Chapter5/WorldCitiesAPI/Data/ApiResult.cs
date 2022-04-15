@@ -69,7 +69,7 @@ namespace WorldCitiesAPI.Data
             return new ApiResult<T>(data, count, pageIndex, pageSize, sortColumn, sortOrder, filterColumn, filterQuery);
         }
 
-        private static bool IsValidProperty(string propertyName, bool throwExcptionIfNotFound = true)
+        public static bool IsValidProperty(string propertyName, bool throwExcptionIfNotFound = true)
         {
             var prop = typeof(T).GetProperty(
                 propertyName,

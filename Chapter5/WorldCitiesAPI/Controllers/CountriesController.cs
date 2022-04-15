@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WorldCitiesAPI.Data;
 using WorldCitiesAPI.Data.Models;
+using System.Linq.Dynamic.Core;
 
 namespace WorldCitiesAPI.Controllers
 {
@@ -104,6 +105,27 @@ namespace WorldCitiesAPI.Controllers
         private bool CountryExists(int id)
         {
             return _context.Countries.Any(e => e.Id == id);
+        }
+
+        [HttpPost]
+        [Route("IsDupeField")]
+        public bool IsDupeField(int countryId, string fieldName, string fieldValue)
+        {
+            //switch (fieldName)
+            //{
+            //    case "name":
+            //        return _context.Countries.Any(c => c.Name == fieldValue && c.Id != countryId);
+            //    case "iso2":
+            //        return _context.Countries.Any(c => c.ISO2 == fieldValue && c.Id != countryId);
+            //    case "iso3":
+            //        return _context.Countries.Any(c => c.ISO3 == fieldValue && c.Id != countryId);
+            //    default:
+            //        return false;
+            //}
+
+            return (ApiResult<Country>.IsValidProperty(fieldName, true))
+                ? _context.Countries.Any($"{fieldName} == @0 && Id!=@1", fieldValue, countryId)
+                : false;
         }
     }
 }

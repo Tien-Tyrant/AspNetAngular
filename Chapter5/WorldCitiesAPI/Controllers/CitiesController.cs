@@ -20,14 +20,14 @@ namespace WorldCitiesAPI.Controllers
         // GET: api/Cities
         [HttpGet]
         public async Task<ActionResult<ApiResult<City>>> GetCities(
-            int pageIndex=0, 
-            int pageSize=10, 
-            string? sortColumn=null, 
-            string? sortOrder=null,
-            string? filterColumn=null,
-            string? filterQuery=null)
+            int pageIndex = 0,
+            int pageSize = 10,
+            string? sortColumn = null,
+            string? sortOrder = null,
+            string? filterColumn = null,
+            string? filterQuery = null)
         {
-            return await ApiResult<City>.CreateAsync(_context.Cities.AsTracking(), pageIndex, pageSize, sortColumn, sortOrder, filterColumn, filterQuery); 
+            return await ApiResult<City>.CreateAsync(_context.Cities.AsTracking(), pageIndex, pageSize, sortColumn, sortOrder, filterColumn, filterQuery);
         }
 
         // GET: api/Cities/5
@@ -105,6 +105,17 @@ namespace WorldCitiesAPI.Controllers
         private bool CityExists(int id)
         {
             return _context.Cities.Any(e => e.Id == id);
+        }
+
+        [HttpPost]
+        [Route("IsDupeCity")]
+        public bool IsDupeCity(City city)
+        {
+            return _context.Cities.Any(c => c.Name == city.Name
+            && c.Lat == city.Lat
+            && c.Lon == city.Lon
+            && c.CountryId == city.CountryId
+            && c.Id != city.Id);
         }
     }
 }
