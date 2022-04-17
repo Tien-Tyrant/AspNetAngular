@@ -20,14 +20,22 @@ namespace WorldCitiesAPI.Controllers
 
         // GET: api/Countries
         [HttpGet]
-        public async Task<ActionResult<ApiResult<Country>>> GetCountries(int pageIndex = 0,
+        public async Task<ActionResult<ApiResult<CountryDTO>>> GetCountries(int pageIndex = 0,
             int pageSize = 10,
             string? sortColumn = null,
             string? sortOrder = null,
             string? filterColumn = null,
             string? filterQuery = null)
         {
-            return await ApiResult<Country>.CreateAsync(_context.Countries.AsNoTracking(), pageIndex, pageSize, sortColumn, sortOrder, filterColumn, filterQuery);
+            return await ApiResult<CountryDTO>.CreateAsync(_context.Countries.AsNoTracking()
+                .Select(country => new CountryDTO
+                {
+                    Id = country.Id,
+                    Name = country.Name,
+                    ISO2 = country.ISO2,   
+                    ISO3 = country.ISO3,
+                    TotalCities = country.Cities.Count,
+                }), pageIndex, pageSize, sortColumn, sortOrder, filterColumn, filterQuery);
         }
 
         // GET: api/Countries/5
