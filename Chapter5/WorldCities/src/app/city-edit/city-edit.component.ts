@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BaseFormComponent } from '../base-form.component';
 import { City } from '../cities/city';
@@ -21,6 +21,10 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
   id?: number;
   countries?: Country[];
 
+  activityLog: string = '';
+
+  private subscriptions: Subscription = new Subscription();
+
   constructor(
     private activateRoute: ActivatedRoute,
     private route: Router,
@@ -37,7 +41,31 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
       countryId: new FormControl('', Validators.required)
     }, null, this.isDupeCity());
 
+    this.subscriptions.add(this.form.valueChanges
+      .subscribe(() => {
+        if (!this.form.dirty) {
+          this.log("Form Model has been loaded.")
+        }
+        else {
+          this.log("Form was updated by the user.")
+        }
+      }));
+
+    this.subscriptions.add(this.form.get("name")!.valueChanges
+      .subscribe(() => {
+        if (!this.form.dirty) {
+          this.log("Name has been loaded with initial values.")
+        }
+        else {
+          this.log("Name was updated by the user.")
+        }
+      }));
+
     this.loadData();
+  }
+
+  log(msg: string) {
+    this.activityLog += "[" + new Date().toLocaleString() + "]" + msg + "<br/>";
   }
 
   loadData() {
@@ -103,5 +131,9 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
         return (result ? { isDupeCity: true } : null)
       }));
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }

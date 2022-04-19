@@ -66,8 +66,8 @@ export class CountryEditComponent
     var country = (this.id) ? this.country : <Country>{};
     if (country) {
       country.name = this.form.controls['name'].value;
-      country.iso2 = this.form.controls['lat'].value;
-      country.iso3 = this.form.controls['lon'].value;
+      country.iso2 = this.form.controls['iso2'].value;
+      country.iso3 = this.form.controls['iso3'].value;
 
       if (this.id) {
         this.countryService.put(country)

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EFCore.BulkExtensions;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 
 namespace WorldCitiesAPI.Data
@@ -63,6 +64,8 @@ namespace WorldCitiesAPI.Data
                 source = source.OrderBy(string.Format("{0} {1}", sortColumn, sortOrder));
             }
             source = source.Skip(pageIndex*pageSize).Take(pageSize);
+
+            var sql = source.ToParametrizedSql();
 
             var data = await source.ToListAsync();
 
