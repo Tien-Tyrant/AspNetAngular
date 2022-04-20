@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using System.Security;
@@ -13,13 +14,22 @@ namespace WorldCitiesAPI.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
 
         public SeedController(
             ApplicationDbContext context,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            RoleManager<IdentityRole> roleManager,
+            UserManager<ApplicationUser> userManager,
+            IConfiguration configuration)
         {
             _context = context;
             _env = env;
+            _roleManager = roleManager;
+            _userManager = userManager;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -110,7 +120,7 @@ namespace WorldCitiesAPI.Controllers
             }
 
 
-            if(numberOfCitiesAdded > 0)
+            if (numberOfCitiesAdded > 0)
             {
                 await _context.SaveChangesAsync();
             }
@@ -121,6 +131,79 @@ namespace WorldCitiesAPI.Controllers
                     Cities = numberOfCitiesAdded,
                     Coutries = numberOfCountriesAdded
                 });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> CreateDefaultUsers()
+        {
+            var role_RegisteredUser = "RegisteredUser";
+            var role_Administrator = "Administrator";
+
+            if (await _roleManager.FindByNameAsync(role_RegisteredUser) == null)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(role_RegisteredUser));
+            }
+
+            if (await _roleManager.FindByNameAsync(role_Administrator) == null)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(role_Administrator));
+            }
+
+            var addedUserList = new List<ApplicationUser>();
+
+            var email_Admin = "admin@email.com";
+
+            if (await _userManager.FindByNameAsync(email_Admin) == null)
+            {
+                var user_Admin = new ApplicationUser
+                {
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = email_Admin,
+                    Email = email_Admin,
+                };
+
+                await _userManager.CreateAsync(user_Admin, _configuration["DefaultPasswords:Administrator"]);
+
+                await _userManager.AddToRoleAsync(user_Admin, role_RegisteredUser);
+                await _userManager.AddToRoleAsync(user_Admin, role_Administrator);
+
+                user_Admin.EmailConfirmed = true;
+                user_Admin.LockoutEnabled = false;
+
+                addedUserList.Add(user_Admin);
+            }
+
+            var email_User = "user@email.com";
+
+            if (await _userManager.FindByNameAsync(email_User) == null)
+            {
+                var user_User = new ApplicationUser
+                {
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = email_User,
+                    Email = email_User,
+                };
+
+                await _userManager.CreateAsync(user_User, _configuration["DefaultPasswords:RegisteredUser"]);
+
+                await _userManager.AddToRoleAsync(user_User, role_RegisteredUser);
+
+                user_User.EmailConfirmed = true;
+                user_User.LockoutEnabled = false;
+
+                addedUserList.Add(user_User);
+            }
+
+            if (addedUserList.Count > 0)
+            {
+                await _context.SaveChangesAsync();
+            }
+
+            return new JsonResult(new
+            {
+                Count = addedUserList.Count,
+                Users = addedUserList
+            });
         }
     }
 }

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LoginComponent } from './auth/login.component';
 import { CitiesComponent } from './cities/cities.component';
 import { CityEditComponent } from './city-edit/city-edit.component';
 import { CountriesComponent } from './countries/countries.component';
@@ -15,6 +16,7 @@ const route: Routes = [
   { path: 'countries', component: CountriesComponent },
   { path: 'country/:id', component: CountryEditComponent },
   { path: 'country', component: CountryEditComponent },
+  { path: 'login', component: LoginComponent},
 ];
 
 @NgModule({
