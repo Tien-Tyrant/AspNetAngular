@@ -66,6 +66,14 @@ builder.Services.AddAuthentication(opt =>
     };
 });
 
+builder.Services.AddCors(options => 
+options.AddPolicy(name: "AngularPolicy", corsPolicyBuilder =>
+{
+    corsPolicyBuilder.AllowAnyHeader();
+    corsPolicyBuilder.AllowAnyMethod();
+    corsPolicyBuilder.WithOrigins(builder.Configuration["AllowedCORS"]);
+}));
+
 builder.Services.AddScoped<JwtHandler>();
 var app = builder.Build();
 app.UseSerilogRequestLogging();
@@ -82,5 +90,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapMethods("api/heartbeat", new[] { "HEAD" }, () => Results.Ok());
 
 app.Run();

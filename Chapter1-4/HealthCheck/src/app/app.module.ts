@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { ConnectionServiceModule, ConnectionServiceOptions, ConnectionServiceOptionsToken } from 'angular-connection-service';
 
 
 @NgModule({
@@ -35,9 +36,15 @@ import { environment } from '../environments/environment';
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
       registrationStrategy: 'registerWhenStable:30000'
-    })
+    }),
+    ConnectionServiceModule
   ],
-  providers: [],
+  providers: [{
+    provide: ConnectionServiceOptionsToken,
+    useValue: <ConnectionServiceOptions>{
+      heartbeatUrl: environment.baseUrl + 'api/heartbeat'
+    }
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
