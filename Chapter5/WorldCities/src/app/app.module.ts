@@ -17,6 +17,10 @@ import { AuthInterceptor } from './auth/auth.interceptor';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { ConnectionServiceModule, ConnectionServiceOptions, ConnectionServiceOptionsToken } from 'angular-connection-service';
+import { GraphQLModule } from './graphql.module';
+//import { APOLLO_OPTIONS } from 'apollo-angular';
+//import { HttpLink } from 'apollo-angular/http';
+//import { InMemoryCache } from '@apollo/client/core'
 
 @NgModule({
   declarations: [
@@ -42,19 +46,39 @@ import { ConnectionServiceModule, ConnectionServiceOptions, ConnectionServiceOpt
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
-    ConnectionServiceModule
+    ConnectionServiceModule,
+    GraphQLModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
     multi: true
   },
-    {
-      provide: ConnectionServiceOptionsToken,
-      useValue: <ConnectionServiceOptions>{
-        heartbeatUrl: environment.baseUrl + 'api/heartbeat'
-      }
-  }],
+  {
+    provide: ConnectionServiceOptionsToken,
+    useValue: <ConnectionServiceOptions>{
+      heartbeatUrl: environment.baseUrl + 'api/heartbeat'
+    }
+  },
+  //{
+  //  provide: APOLLO_OPTIONS,
+  //  useFactory: (httpLink: HttpLink) => {
+  //    return {
+  //      cache: new InMemoryCache({
+  //        addTypename: false
+  //      }),
+  //      link: httpLink.create({
+  //        uri: environment.baseUrl + 'api/graphql'
+  //      }),
+  //      defaultOptions: {
+  //        watchQuery: { fetchPolicy: 'no-cache' },
+  //        query: { fetchPolicy: 'no-cache' }
+  //      }
+  //    };
+  //  },
+  //  deps: [HttpLink]
+  //}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

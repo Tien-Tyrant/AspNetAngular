@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WorldCitiesAPI.Data.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +76,14 @@ options.AddPolicy(name: "AngularPolicy", corsPolicyBuilder =>
 }));
 
 builder.Services.AddScoped<JwtHandler>();
+
+builder.Services.AddGraphQLServer()
+    .AddAuthorization()
+    .AddQueryType<Query>()
+    .AddMutationType<Mutation>()
+    .AddFiltering()
+    .AddSorting();
+
 var app = builder.Build();
 app.UseSerilogRequestLogging();
 
@@ -91,5 +100,6 @@ app.UseAuthorization();
 app.UseCors("AngularPolicy");
 app.MapControllers();
 app.MapMethods("api/heartbeat", new[] { "HEAD" }, () => Results.Ok());
+app.MapGraphQL("/api/graphql");
 
 app.Run();
